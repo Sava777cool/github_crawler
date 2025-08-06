@@ -1,0 +1,113 @@
+[
+    {
+        "url": "https://github.com/jazzband/django-widget-tweaks",
+        "extra": {
+            "owner": "jazzband",
+            "language_stats": {
+                "Python": "100.0"
+            }
+        }
+    },
+    {
+        "url": "https://github.com/Shubh0405/classmanager-student-teacher-portal",
+        "extra": {
+            "owner": "Shubh0405",
+            "language_stats": {
+                "Python": "46.1",
+                "HTML": "40.8",
+                "CSS": "13.1"
+            }
+        }
+    },
+    {
+        "url": "https://github.com/outreachy/website",
+        "extra": {
+            "owner": "outreachy",
+            "language_stats": {
+                "HTML": "70.4",
+                "Python": "28.2",
+                "JavaScript": "0.8",
+                "CSS": "0.5",
+                "SCSS": "0.1",
+                "Shell": "0.0"
+            }
+        }
+    },
+    {
+        "url": "https://github.com/nomadcoders/vietgram",
+        "extra": {
+            "owner": "nomadcoders",
+            "language_stats": {
+                "HTML": "65.8",
+                "CSS": "34.2"
+            }
+        }
+    },
+    {
+        "url": "https://github.com/CAVIND46016/Simple-Calculator-Web-app",
+        "extra": {
+            "owner": "CAVIND46016",
+            "language_stats": {
+                "Python": "40.7",
+                "HTML": "31.8",
+                "JavaScript": "23.1",
+                "CSS": "4.4"
+            }
+        }
+    },
+    {
+        "url": "https://github.com/mozilla/bedrock",
+        "extra": {
+            "owner": "mozilla",
+            "language_stats": {
+                "HTML": "48.4",
+                "Python": "24.4",
+                "JavaScript": "12.1",
+                "SCSS": "9.0",
+                "Fluent": "5.3",
+                "Shell": "0.5"
+            }
+        }
+    },
+    {
+        "url": "https://github.com/ayush9304/Flight",
+        "extra": {
+            "owner": "ayush9304",
+            "language_stats": {
+                "HTML": "58.2",
+                "Python": "14.6",
+                "CSS": "13.8",
+                "JavaScript": "13.4"
+            }
+        }
+    },
+    {
+        "url": "https://github.com/adamchainz/django-minify-html",
+        "extra": {
+            "owner": "adamchainz",
+            "language_stats": {
+                "Python": "100.0"
+            }
+        }
+    },
+    {
+        "url": "https://github.com/django-cms/djangocms-snippet",
+        "extra": {
+            "owner": "django-cms",
+            "language_stats": {
+                "Python": "98.0",
+                "HTML": "2.0"
+            }
+        }
+    },
+    {
+        "url": "https://github.com/saadmk11/banking-system",
+        "extra": {
+            "owner": "saadmk11",
+            "language_stats": {
+                "Python": "61.5",
+                "HTML": "38.5"
+            }
+        }
+    }
+]
