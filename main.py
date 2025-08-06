@@ -149,16 +149,17 @@ async def main():
             session=session, proxy=proxy, ua=user_agent, url=search_url
         )
 
-        tasks = [
-            parse_repo_details(
-                session=session, proxy=proxy, ua=user_agent, url=item.get("url")
-            )
-            for item in page_data
-        ]
-        results = await asyncio.gather(*tasks)
+        if SOURCE_DATA.get("type").lower() == "repositories":
+            tasks = [
+                parse_repo_details(
+                    session=session, proxy=proxy, ua=user_agent, url=item.get("url")
+                )
+                for item in page_data
+            ]
+            page_data = await asyncio.gather(*tasks)
 
         with open("results.json", "w", encoding="utf-8") as f:
-            json.dump(results, f, indent=4, ensure_ascii=False)
+            json.dump(page_data, f, indent=4, ensure_ascii=False)
             logger.info("Results successfully saved in results.json!")
 
 
