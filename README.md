@@ -71,7 +71,9 @@ The program consists of the following packages:
 #### Run scripts
 
 `python main.py` - start crawling and save data in result.json in current folder.
+
 `pytest` - run tests.
+
 `pytest -v` - run tests with details.
 
 
