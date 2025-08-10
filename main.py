@@ -5,18 +5,23 @@ import random
 from lxml import html
 from loguru import logger
 from typing import List, Dict
+from urllib.parse import urlencode
 from fake_useragent import UserAgent
 
 SOURCE_DATA = json.load(open("source.json", "r", encoding="utf-8"))
 
 
-def build_search_url():
+def build_search_url(keywords: list, type_source: str) -> str:
     """
     Method for getting url by keywords from source.json
     :return: url with keywords
     """
-    keywords = "+".join(SOURCE_DATA.get("keywords"))
-    return f'https://github.com/search?q={keywords}&type={SOURCE_DATA.get("type")}'
+    base_url = "https://github.com/search"
+    query = {
+        "q": " ".join(keywords),
+        "type": type_source,
+    }
+    return f"{base_url}?{urlencode(query)}"
 
 
 async def get_working_proxy() -> str | None:
