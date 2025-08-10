@@ -1,13 +1,13 @@
-import json
-import asyncio
-import aiohttp
-import random
-import argparse
 from lxml import html
 from pathlib import Path
 from loguru import logger
+from random import shuffle
+from json import load, dump
 from typing import List, Dict
+from asyncio import gather, run
+from aiohttp import ClientSession
 from urllib.parse import urlencode
+from argparse import ArgumentParser
 from fake_useragent import UserAgent
 
 
@@ -31,9 +31,9 @@ async def get_working_proxy(proxy_list: list) -> str | None:
     :return: str http://{proxy} or None
     """
 
-    random.shuffle(proxy_list)
+    shuffle(proxy_list)
 
-    async with aiohttp.ClientSession() as session:
+    async with ClientSession() as session:
         for proxy in proxy_list:
             try:
                 proxy = f"http://{proxy}"
@@ -52,11 +52,11 @@ async def get_working_proxy(proxy_list: list) -> str | None:
 
 
 async def get_html_content(
-    session: aiohttp.ClientSession, url: str, ua: str, proxy: str
+    session: ClientSession, url: str, ua: str, proxy: str
 ) -> str | None:
     """
     Method async get_html_content using aiohttp for async requests
-    :param session: aiohttp.ClientSession
+    :param session: ClientSession
     :param url: str by keywords or find repositories url
     :param ua: random user agent
     :param proxy: random proxy from source.json
@@ -73,11 +73,11 @@ async def get_html_content(
 
 
 async def parse_search_results(
-    session: aiohttp.ClientSession, proxy: str, ua: str, url: str
+    session: ClientSession, proxy: str, ua: str, url: str
 ) -> List[Dict]:
     """
     Method for parsing search results
-    :param session: aiohttp.ClientSession
+    :param session: ClientSession
     :param url: str by keywords
     :param ua: random user agent
     :param proxy: random proxy from source.json
@@ -96,11 +96,11 @@ async def parse_search_results(
 
 
 async def parse_repo_details(
-    session: aiohttp.ClientSession, proxy: str, ua: str, url: str
+    session: ClientSession, proxy: str, ua: str, url: str
 ) -> Dict:
     """
     Methof for parsing repository details
-    :param session: aiohttp.ClientSession
+    :param session: ClientSession
     :param url: repositories url
     :param ua: random user agent
     :param proxy: random proxy from source.json
@@ -142,7 +142,7 @@ async def main(file_name: str):
     # Main function with base logic
 
     base_path = Path(__file__).parent
-    source_data = json.load(open(base_path / file_name, "r", encoding="utf-8"))
+    source_data = load(open(base_path / file_name, "r", encoding="utf-8"))
     type_source = source_data.get("type").lower()
 
     user_agent = UserAgent(platforms="desktop").random
@@ -154,7 +154,7 @@ async def main(file_name: str):
     if not proxy:
         return
 
-    async with aiohttp.ClientSession() as session:
+    async with ClientSession() as session:
         page_data = await parse_search_results(
             session=session, proxy=proxy, ua=user_agent, url=search_url
         )
@@ -166,17 +166,17 @@ async def main(file_name: str):
                 )
                 for item in page_data
             ]
-            page_data = await asyncio.gather(*tasks)
+            page_data = await gather(*tasks)
 
         with open("results.json", "w", encoding="utf-8") as f:
-            json.dump(page_data, f, indent=4, ensure_ascii=False)
+            dump(page_data, f, indent=4, ensure_ascii=False)
             logger.info("Results successfully saved in results.json!")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="GitHub Crawler")
+    parser = ArgumentParser(description="GitHub Crawler")
     parser.add_argument(
         "-f", "--file", help="path to source.json file", default="source.json"
     )
     args = parser.parse_args()
-    asyncio.run(main(file_name=args.file))
+    run(main(file_name=args.file))
