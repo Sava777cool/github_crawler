@@ -2,13 +2,13 @@ import json
 import asyncio
 import aiohttp
 import random
+import argparse
 from lxml import html
+from pathlib import Path
 from loguru import logger
 from typing import List, Dict
 from urllib.parse import urlencode
 from fake_useragent import UserAgent
-
-SOURCE_DATA = json.load(open("source.json", "r", encoding="utf-8"))
 
 
 def build_search_url(keywords: list, type_source: str) -> str:
@@ -24,14 +24,13 @@ def build_search_url(keywords: list, type_source: str) -> str:
     return f"{base_url}?{urlencode(query)}"
 
 
-async def get_working_proxy() -> str | None:
+async def get_working_proxy(proxy_list: list) -> str | None:
     """
     Method for checking working proxies
     make requests to https://api.ipify.org
     :return: str http://{proxy} or None
     """
 
-    proxy_list = SOURCE_DATA.get("proxies")
     random.shuffle(proxy_list)
 
     async with aiohttp.ClientSession() as session:
@@ -139,12 +138,18 @@ async def parse_repo_details(
     return {"url": url, "extra": {"owner": owner, "language_stats": lang_data}}
 
 
-async def main():
+async def main(file_name: str):
     # Main function with base logic
 
+    base_path = Path(__file__).parent
+    source_data = json.load(open(base_path / file_name, "r", encoding="utf-8"))
+    type_source = source_data.get("type").lower()
+
     user_agent = UserAgent(platforms="desktop").random
-    proxy = await get_working_proxy()
-    search_url = build_search_url()
+    proxy = await get_working_proxy(proxy_list=source_data.get("proxies"))
+    search_url = build_search_url(
+        keywords=source_data.get("keywords"), type_source=type_source
+    )
 
     if not proxy:
         return
@@ -154,7 +159,7 @@ async def main():
             session=session, proxy=proxy, ua=user_agent, url=search_url
         )
 
-        if SOURCE_DATA.get("type").lower() == "repositories":
+        if type_source == "repositories":
             tasks = [
                 parse_repo_details(
                     session=session, proxy=proxy, ua=user_agent, url=item.get("url")
@@ -169,4 +174,9 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    parser = argparse.ArgumentParser(description="GitHub Crawler")
+    parser.add_argument(
+        "-f", "--file", help="path to source.json file", default="source.json"
+    )
+    args = parser.parse_args()
+    asyncio.run(main(file_name=args.file))
