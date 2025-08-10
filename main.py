@@ -10,7 +10,7 @@ from fake_useragent import UserAgent
 SOURCE_DATA = json.load(open("source.json", "r", encoding="utf-8"))
 
 
-def get_url():
+def build_search_url():
     """
     Method for getting url by keywords from source.json
     :return: url with keywords
@@ -47,11 +47,11 @@ async def get_working_proxy() -> str | None:
     return None
 
 
-async def fetch(
+async def get_html_content(
     session: aiohttp.ClientSession, url: str, ua: str, proxy: str
 ) -> str | None:
     """
-    Method async fetch using aiohttp for async requests
+    Method async get_html_content using aiohttp for async requests
     :param session: aiohttp.ClientSession
     :param url: str by keywords or find repositories url
     :param ua: random user agent
@@ -80,7 +80,7 @@ async def parse_search_results(
     :return: list of urls of repositories
     """
 
-    html_content = await fetch(session=session, proxy=proxy, ua=ua, url=url)
+    html_content = await get_html_content(session=session, proxy=proxy, ua=ua, url=url)
     if not html_content:
         return []
 
@@ -103,7 +103,7 @@ async def parse_repo_details(
     :return: dict with parsed data
     """
 
-    html_content = await fetch(session=session, proxy=proxy, ua=ua, url=url)
+    html_content = await get_html_content(session=session, proxy=proxy, ua=ua, url=url)
     tree = html.fromstring(html_content)
 
     try:
@@ -139,7 +139,7 @@ async def main():
 
     user_agent = UserAgent(platforms="desktop").random
     proxy = await get_working_proxy()
-    search_url = get_url()
+    search_url = build_search_url()
 
     if not proxy:
         return
