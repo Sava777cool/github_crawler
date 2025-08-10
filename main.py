@@ -24,7 +24,7 @@ def build_search_url(keywords: list, type_source: str) -> str:
     return f"{base_url}?{urlencode(query)}"
 
 
-async def get_working_proxy(proxy_list: list) -> str | None:
+async def get_working_proxy(proxy_list: list, request_timeout: int = 2) -> str | None:
     """
     Method for checking working proxies
     make requests to https://api.ipify.org
@@ -40,7 +40,7 @@ async def get_working_proxy(proxy_list: list) -> str | None:
                 async with session.get(
                     "https://api.ipify.org?format=json",
                     proxy=proxy,
-                    timeout=2,
+                    timeout=request_timeout,
                 ) as response:
                     if response.status == 200:
                         logger.info(f"Working proxy: {proxy}")
@@ -52,7 +52,7 @@ async def get_working_proxy(proxy_list: list) -> str | None:
 
 
 async def get_html_content(
-    session: ClientSession, url: str, ua: str, proxy: str
+    session: ClientSession, url: str, ua: str, proxy: str, request_timeout: int = 2
 ) -> str | None:
     """
     Method async get_html_content using aiohttp for async requests
@@ -60,11 +60,12 @@ async def get_html_content(
     :param url: str by keywords or find repositories url
     :param ua: random user agent
     :param proxy: random proxy from source.json
+    :param request_timeout: amount of seconds for request
     :return: html content
     """
     try:
         async with session.get(
-            url, headers={"User-Agent": ua}, proxy=proxy, timeout=2
+            url, headers={"User-Agent": ua}, proxy=proxy, timeout=request_timeout
         ) as response:
             return await response.text()
     except Exception as e:
