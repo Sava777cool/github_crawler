@@ -70,7 +70,9 @@ The program consists of the following packages:
 
 #### Run scripts
 
-`python main.py` - start crawling and save data in result.json in current folder.
+`python main.py` - start crawling with default configuration and save data in result.json in current folder.
+
+`python main.py -f, --file source.json` - start crawling with custom file name with source data and save data in result.json in current folder.
 
 `pytest` - run tests.
 
